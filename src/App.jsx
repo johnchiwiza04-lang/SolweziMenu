@@ -22,20 +22,8 @@ const demoRestaurants = {
         price: 55,
         is_available: true,
       },
-      {
-        id: "soft-drink",
-        name: "Soft Drink",
-        description: "Cold 500ml soft drink.",
-        price: 15,
-        is_available: true,
-      },
-      {
-        id: "samosa-mix",
-        name: "Samosa Mix",
-        description: "Quick snack pack for hungry customers.",
-        price: 25,
-        is_available: true,
-      },
+      { id: "soft-drink", name: "Soft Drink", description: "Cold 500ml soft drink.", price: 15, is_available: true },
+      { id: "samosa-mix", name: "Samosa Mix", description: "Quick snack pack for hungry customers.", price: 25, is_available: true },
     ],
   },
   "copper-breeze": {
@@ -44,27 +32,9 @@ const demoRestaurants = {
     tagline: "Coffee, light bites, and relaxed dining.",
     address: "Mile 6, Solwezi",
     menu: [
-      {
-        id: "latte",
-        name: "Latte",
-        description: "Smooth espresso with fresh milk.",
-        price: 30,
-        is_available: true,
-      },
-      {
-        id: "breakfast-bowl",
-        name: "Breakfast Bowl",
-        description: "Eggs, toast, avocado and greens.",
-        price: 60,
-        is_available: true,
-      },
-      {
-        id: "muffin",
-        name: "Blueberry Muffin",
-        description: "Freshly baked and lightly sweetened.",
-        price: 18,
-        is_available: true,
-      },
+      { id: "latte", name: "Latte", description: "Smooth espresso with fresh milk.", price: 30, is_available: true },
+      { id: "breakfast-bowl", name: "Breakfast Bowl", description: "Eggs, toast, avocado and greens.", price: 60, is_available: true },
+      { id: "muffin", name: "Blueberry Muffin", description: "Freshly baked and lightly sweetened.", price: 18, is_available: true },
     ],
   },
 };
@@ -79,7 +49,6 @@ export default function App() {
 
   const [restaurantSlug] = useState(() => {
     if (typeof window === "undefined") return "solwezi";
-
     const params = new URLSearchParams(window.location.search);
     const requestedSlug = params.get("restaurant");
     return requestedSlug && demoRestaurants[requestedSlug] ? requestedSlug : "solwezi";
@@ -92,17 +61,13 @@ export default function App() {
     if (typeof window === "undefined") {
       return `https://example.com/?restaurant=${restaurant.slug}`;
     }
-
     return `${window.location.origin}${window.location.pathname}?restaurant=${restaurant.slug}`;
   }, [restaurant.slug]);
 
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qrMenuUrl)}`;
 
   const cartItemsCount = cart.reduce((sum, item) => sum + Number(item.quantity || 1), 0);
-  const cartTotal = cart.reduce(
-    (sum, item) => sum + Number(item.price || 0) * Number(item.quantity || 1),
-    0
-  );
+  const cartTotal = cart.reduce((sum, item) => sum + Number(item.price || 0) * Number(item.quantity || 1), 0);
 
   const addToOrder = (item) => {
     setNotice("");
@@ -110,12 +75,9 @@ export default function App() {
       const match = current.find((entry) => entry.id === item.id);
       if (match) {
         return current.map((entry) =>
-          entry.id === item.id
-            ? { ...entry, quantity: Number(entry.quantity || 1) + 1 }
-            : entry
+          entry.id === item.id ? { ...entry, quantity: Number(entry.quantity || 1) + 1 } : entry
         );
       }
-
       return [...current, { ...item, quantity: 1 }];
     });
   };
@@ -150,9 +112,7 @@ export default function App() {
   };
 
   async function handlePlaceOrder() {
-    if (!cart.length) {
-      return;
-    }
+    if (!cart.length) return;
 
     const orderPayload = {
       restaurant_name: restaurant.name,
@@ -160,30 +120,22 @@ export default function App() {
       created_at: new Date().toISOString(),
       order_total: Number(cartTotal || 0),
       item_count: cartItemsCount,
-      items: cart
-        .map((item) => `${item.name} x${Number(item.quantity || 1)}`)
-        .join(", "),
+      items: cart.map((item) => `${item.name} x${Number(item.quantity || 1)}`).join(", "),
     };
 
     if (hasSupabaseSetup && supabase) {
       try {
         const { error } = await supabase.from("orders").insert([orderPayload]);
 
-        if (error) {
-          throw error;
-        }
+        if (error) throw error;
 
         setNotice(`Order submitted successfully for ${restaurant.name}.`);
       } catch (error) {
         console.warn("Supabase order insert failed:", error);
-        setNotice(
-          "This demo order was prepared locally. Your Supabase schema must accept the orders table and fields before live submission will work."
-        );
+        setNotice("This demo order was prepared locally. Your Supabase schema must accept the orders table and fields before live submission will work.");
       }
     } else {
-      setNotice(
-        "Demo mode: order captured in this browser session only. Add valid Supabase env vars to save live orders."
-      );
+      setNotice("Demo mode: order captured in this browser session only. Add valid Supabase env vars to save live orders.");
     }
 
     setCart([]);
@@ -281,19 +233,11 @@ export default function App() {
                       </div>
 
                       <div className="quantity-box">
-                        <button
-                          type="button"
-                          onClick={() => updateQuantity(item.id, -1)}
-                          aria-label={`Decrease ${item.name}`}
-                        >
+                        <button type="button" onClick={() => updateQuantity(item.id, -1)} aria-label={`Decrease ${item.name}`}>
                           −
                         </button>
                         <span>{Number(item.quantity || 1)}</span>
-                        <button
-                          type="button"
-                          onClick={() => updateQuantity(item.id, 1)}
-                          aria-label={`Increase ${item.name}`}
-                        >
+                        <button type="button" onClick={() => updateQuantity(item.id, 1)} aria-label={`Increase ${item.name}`}>
                           +
                         </button>
                       </div>
