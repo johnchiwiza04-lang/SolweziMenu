@@ -1,6 +1,10 @@
-import { supabase } from "./supabase";
+import { supabase } from "./src/lib/supabase.js";
 
 export async function getRestaurants() {
+  if (!supabase) {
+    return [];
+  }
+
   const { data, error } = await supabase
     .from("restaurants")
     .select("*")
@@ -15,6 +19,10 @@ export async function getRestaurants() {
 }
 
 export async function getRestaurantMenu(restaurantId) {
+  if (!supabase) {
+    return [];
+  }
+
   const { data, error } = await supabase
     .from("menu_items")
     .select("*")
