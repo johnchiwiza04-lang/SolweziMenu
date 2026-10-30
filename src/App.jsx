@@ -165,28 +165,20 @@ export default function App() {
         .join(", "),
     };
 
-    if (hasSupabaseSetup && supabase) {
-      try {
-        const { error } = await supabase.from("orders").insert([orderPayload]);
-
-        if (error) {
-          throw error;
-        }
-
-        setNotice(`Order submitted successfully for ${restaurant.name}.`);
-      } catch (error) {
-        console.warn("Supabase order insert failed:", error);
-        setNotice(
-          "This demo order was prepared locally. Your Supabase schema must accept the orders table and fields before live submission will work."
-        );
-      }
-    } else {
-      setNotice(
-        "Demo mode: order captured in this browser session only. Add valid Supabase env vars to save live orders."
-      );
+    if (!hasSupabaseSetup || !supabase) {
+      setNotice("Order not sent: this menu is in demo mode. The restaurant has not connected its live ordering database yet. Your cart has been kept.");
+      return;
     }
 
-    setCart([]);
+    try {
+      const { error } = await supabase.from("orders").insert([orderPayload]);
+      if (error) throw error;
+      setNotice(`Order submitted successfully for ${restaurant.name}.`);
+      setCart([]);
+    } catch (error) {
+      console.error("Order submission failed:", error);
+      setNotice(`Order was not sent. Database error: ${error.message || "Unknown error"}. Your cart has been kept.`);
+    }
   }
 
   return (
@@ -377,7 +369,7 @@ export default function App() {
             <div className="dashboard-grid">
               <div className="stat-card">
                 <span>Orders today</span>
-                <strong>24</strong>
+                <strong>—</strong>
               </div>
               <div className="stat-card">
                 <span>Active items</span>
@@ -385,7 +377,7 @@ export default function App() {
               </div>
               <div className="stat-card">
                 <span>Revenue</span>
-                <strong>K1,240</strong>
+                <strong>—</strong>
               </div>
             </div>
 
@@ -394,12 +386,12 @@ export default function App() {
                 <h3>{activeTab}</h3>
                 <p>
                   {activeTab === "Overview"
-                    ? "Track orders, menu performance, and quick actions from a single dashboard."
+                    ? "Demo workspace only. Connect a restaurant account and live database before using operational figures."
                     : activeTab === "Orders"
-                      ? "Recent customer orders are ready for kitchen preparation and delivery updates."
+                      ? "No live orders are loaded in this demo workspace."
                       : activeTab === "Menu"
-                        ? "Keep your menu fresh and manage item availability without leaving the dashboard."
-                        : "Use reporting to review best sellers, customer trends, and revenue updates."}
+                        ? "Menu editing is not connected in this demo workspace."
+                        : "Live reporting is unavailable until real restaurant orders are connected."}
                 </p>
               </div>
 
