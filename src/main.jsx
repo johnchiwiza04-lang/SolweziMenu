@@ -1,74 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
+import App from "./App.jsx";
 import "./styles.css";
-
-function App() {
-  return (
-    <div className="app">
-      <header className="header">
-        <div className="logo">SolweziMenu</div>
-        <button className="login">Restaurant Login</button>
-      </header>
-
-      <main>
-        <section className="hero">
-          <p className="eyebrow">DIGITAL MENUS • ONLINE ORDERS</p>
-
-          <h1>
-            Your menu.
-            <br />
-            Your customers.
-            <br />
-            One simple system.
-          </h1>
-
-          <p className="description">
-            SolweziMenu helps restaurants, bars, lodges, cafés and
-            takeaways in Zambia create digital menus and receive orders
-            without requiring customers to download an app.
-          </p>
-
-          <div className="buttons">
-            <button className="primary">View Demo Menu</button>
-            <button className="secondary">For Restaurant Owners</button>
-          </div>
-        </section>
-
-        <section className="features">
-          <div className="feature">
-            <div className="icon">📱</div>
-            <h2>QR Menu</h2>
-            <p>
-              Customers scan a QR code and open your menu instantly.
-            </p>
-          </div>
-
-          <div className="feature">
-            <div className="icon">🍽️</div>
-            <h2>Easy Menu Management</h2>
-            <p>
-              Restaurant owners can manage items, prices, availability
-              and food photos.
-            </p>
-          </div>
-
-          <div className="feature">
-            <div className="icon">🧾</div>
-            <h2>Online Orders</h2>
-            <p>
-              Receive customer orders and manage them from the
-              restaurant dashboard.
-            </p>
-          </div>
-        </section>
-      </main>
-
-      <footer>
-        <p>© 2026 SolweziMenu • Zambia</p>
-      </footer>
-    </div>
-  );
-}
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
